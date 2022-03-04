@@ -17,3 +17,5 @@ node_modules/
 .env.local
 
 .idea
+
+./src/server/config.json
