@@ -18,4 +18,4 @@ node_modules/
 
 .idea
 
-./src/server/config.json
+src/server/config.json
