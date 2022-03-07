@@ -1,28 +1,28 @@
-const express = require('express');
+import express, {Request, Response} from "express";
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const userSchema = require('../Schemes/User');
-const config = require('../config.json')
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../Schemes/User';
+const config =  require('../config.json');
 
 /**
- * @route   POST /user/register
+ * @route   POST /user
  * @desc    register a new user
  * @access  public
  * */
-router.post('/register', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
     console.log(req.body);
     const {userName, firstName, lastName, email, password, middleName = '', apartments = []} = req.body;
     try {
-        let user = await userSchema.findOne({userName});
+        let user = await User.findOne({userName});
         if(user){
             return res.status(400).json({msg:'Error, user name is taken'})
         }
-        user = await userSchema.findOne({email});
+        user = await User.findOne({email});
         if(user){
             return res.status(400).json({msg:'Error, this email has been used'});
         }
-        user = new userSchema({userName, firstName, lastName, email, password, middleName, apartments});
+        user = new User({userName, firstName, lastName, email, password, middleName, apartments});
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
         await user.save();
@@ -44,5 +44,4 @@ router.post('/register', async (req, res) => {
     }
 })
 
-module.exports = router;
-
+export default router;
