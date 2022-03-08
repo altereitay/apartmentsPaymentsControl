@@ -6,12 +6,11 @@ import User from '../Schemes/User';
 const config =  require('../config.json');
 
 /**
- * @route   POST /user
+ * @route   POST /user/register
  * @desc    register a new user
  * @access  public
  * */
-router.post('/', async (req: Request, res: Response) => {
-    console.log(req.body);
+router.post('/register', async (req: Request, res: Response) => {
     const {userName, firstName, lastName, email, password, middleName = '', apartments = []} = req.body;
     try {
         let user = await User.findOne({userName});
@@ -43,5 +42,42 @@ router.post('/', async (req: Request, res: Response) => {
         res.status(500).send('Server error');
     }
 })
+
+/**
+ * @route   POST /user/login
+ * @desc    register a new user
+ * @access  public
+ * */
+
+router.post('/login', async (req: Request, res: Response)=>{
+    const {userName, password} = req.body;
+    try{
+      let user = await User.findOne({userName});
+      if (!user){
+          return res.status(400).json({msg: `No username: ${userName} has found`});
+      }
+      const matchingPasswords = await bcrypt.compare(password, user.password);
+      if(!matchingPasswords){
+          return  res.status(400).json({msg: 'Password incorrect'});
+      }
+      const payload = {
+          user: {
+              id: user.id
+          }
+      }
+        jwt.sign(payload, config.jwtSecret, {expiresIn: 360000}, (err, token)=>{
+            if (err){
+                throw err;
+            }
+            res.json({msg:token})
+        })
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+
 
 export default router;

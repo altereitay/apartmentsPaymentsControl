@@ -1,5 +1,4 @@
-import mongoose, {Schema, model, Model} from "mongoose";
-import payment1 from "./Payment";
+import {Schema, model, Model} from "mongoose";
 
 interface apartment {
     tenants: [userID: Schema.Types.ObjectId, payments: [Schema.Types.ObjectId]],
@@ -33,5 +32,5 @@ const apartmentSchema = new Schema<apartment, Model<apartment>>({
     }]
 })
 
-const Payment = model<apartment>('Payment', apartmentSchema);
-export default Payment;
+const Apartment = model<apartment>('Apartment', apartmentSchema);
+export default Apartment;
