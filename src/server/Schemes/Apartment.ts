@@ -3,7 +3,8 @@ import {Schema, model, Model} from "mongoose";
 interface apartment {
     tenants: [userID: Schema.Types.ObjectId, payments: [Schema.Types.ObjectId]],
     payments: [Schema.Types.ObjectId],
-    headOfTenants: Schema.Types.ObjectId
+    headOfTenants: Schema.Types.ObjectId,
+    apartmentName: string
 }
 
 const apartmentSchema = new Schema<apartment, Model<apartment>>({
@@ -29,7 +30,11 @@ const apartmentSchema = new Schema<apartment, Model<apartment>>({
             type: Schema.Types.ObjectId,
             ref: 'payment'
         }
-    }]
+    }],
+    apartmentName:{
+        type: String,
+        required: true
+    }
 })
 
 const Apartment = model<apartment>('Apartment', apartmentSchema);
